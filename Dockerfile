@@ -1,11 +1,11 @@
 FROM archlinux:latest
 
+# install build dependencies
+RUN pacman -Sy --noconfirm base-devel
+
 # patch makepkg to allow running as root; see
 # https://www.reddit.com/r/archlinux/comments/6qu4jt/how_to_run_makepkg_in_docker_container_yes_as_root/
 RUN sed -i 's,exit $E_ROOT,echo but you know what you do,' /usr/bin/makepkg
-
-# install build dependencies
-RUN pacman -Sy --noconfirm base-devel
 
 # install aurutils and register it as local package repository
 RUN \
@@ -17,11 +17,11 @@ RUN \
     makepkg --syncdeps --noconfirm && \
     pacman -U --noconfirm aurutils-2.3.3-1-any.pkg.tar.xz && \
     mkdir /workspace && \
-    repo-add /workspace/aurci2.db.tar.gz /tmp/u/aurutils/aurutils-*.pkg.tar.xz && \
+    repo-add /workspace/aurci2.db.tar.gz /tmp/aurutils/aurutils-*.pkg.tar.xz && \
     echo "# local repository (required by aur tools to be set up)" >> /etc/pacman.conf && \
     echo "[aurci2]" >> /etc/pacman.conf && \
     echo "SigLevel = Optional TrustAll" >> /etc/pacman.conf && \
-    echo "Server = file:///workspace" >> /etc/pacman.conf && \
+    echo "Server = file:///workspace" >> /etc/pacman.conf
 
 COPY update_repository.sh /
 
