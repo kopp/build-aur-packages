@@ -24,14 +24,12 @@ aur sync \
 # move the local repository to the workspace
 if [ -n "$GITHUB_WORKSPACE" ]
 then
+    rm /workspace/*.old
     echo "Moving repository to github workspace"
     mv /workspace/* $GITHUB_WORKSPACE/
-    # make sure that the .db/.files symlinks are in place
+    # make sure that the .db/.files files are in place
+    # Note: Symlinks fail to upload, so copy those files
     cd $GITHUB_WORKSPACE
-    echo workspace current
-    ls
-    ln -vfs aurci2.db.tar.gz aurci2.db
-    ln -vfs aurci2.files.tar.gz aurci2.files
-    echo workspace later
-    ls
+    cp aurci2.db.tar.gz aurci2.db
+    cp aurci2.files.tar.gz aurci2.files
 fi
