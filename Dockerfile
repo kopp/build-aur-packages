@@ -1,11 +1,11 @@
 FROM archlinux:latest
 
+# install build dependencies
+RUN pacman -Sy --noconfirm base-devel
+
 # patch makepkg to allow running as root; see
 # https://www.reddit.com/r/archlinux/comments/6qu4jt/how_to_run_makepkg_in_docker_container_yes_as_root/
 RUN sed -i 's,exit $E_ROOT,echo but you know what you do,' /usr/bin/makepkg
-
-# install build dependencies
-RUN pacman -Sy --noconfirm base-devel
 
 # install aurutils and register it as local package repository
 RUN gpg --recv-keys --keyserver "hkp://ipv4.pool.sks-keyservers.net" 6BC26A17B9B7018A
