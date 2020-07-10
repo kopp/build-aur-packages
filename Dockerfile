@@ -11,8 +11,11 @@ RUN sed -i 's,exit $E_ROOT,echo but you know what you do,' /usr/bin/makepkg
 RUN gpg --recv-keys --keyserver "hkp://ipv4.pool.sks-keyservers.net" 6BC26A17B9B7018A
 RUN cd /tmp/
 RUN curl --output aurutils.tar.gz https://aur.archlinux.org/cgit/aur.git/snapshot/aurutils.tar.gz
+RUN ls
+RUN tar tf aurutils.tar.gz
 RUN tar xf aurutils.tar.gz
 RUN cd aurutils
+RUN ls
 RUN makepkg --syncdeps --noconfirm
 RUN pacman -U --noconfirm aurutils-2.3.3-1-any.pkg.tar.xz
 RUN mkdir /workspace
