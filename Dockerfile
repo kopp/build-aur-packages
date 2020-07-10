@@ -17,7 +17,7 @@ RUN \
     makepkg --syncdeps --noconfirm && \
     pacman -U --noconfirm aurutils-2.3.3-1-any.pkg.tar.xz && \
     mkdir /workspace && \
-    repo-add /workspace/aurci2.db.tar.gz /tmp/u/aurutils/aurutils-*.pkg.tar.xz && \
+    repo-add /workspace/aurci2.db.tar.gz /tmp/aurutils/aurutils-*.pkg.tar.xz && \
     echo "# local repository (required by aur tools to be set up)" >> /etc/pacman.conf && \
     echo "[aurci2]" >> /etc/pacman.conf && \
     echo "SigLevel = Optional TrustAll" >> /etc/pacman.conf && \
