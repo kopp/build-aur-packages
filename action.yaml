@@ -1,0 +1,29 @@
+name: "Build AUR package repository"
+description: >
+    Build a given list of AUR packages and store them in a repository.
+branding:
+  icon: package
+  color: blue
+inputs:
+  packages:
+    description: >
+        A string with a space separated list of aur packages that should
+        be built and included in the repository.
+    required: true
+  missing_pacman_dependencies:
+    description: >
+        A string with a space separated list of dependencies that are not
+        correctly mentioned as dependencies in the PKGBUILD file and that
+        are available from pacman.
+    required: false
+    default: ""
+  missing_aur_dependencies:
+    description: >
+        A string with a space separated list of dependencies that are not
+        correctly mentioned as dependencies in the PKGBUILD file and that
+        are available from AUR.
+    required: false
+    default: ""
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
