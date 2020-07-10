@@ -12,6 +12,9 @@ then
     pacman -Sy $INPUT_MISSING_PACMAN_DEPENDENCIES
 fi
 
+echo workspace
+ls /workspace
+
 # add them to the local repository
 aur sync \
     --noconfirm --noview \
