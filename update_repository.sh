@@ -15,9 +15,6 @@ then
     pacman -S $INPUT_MISSING_PACMAN_DEPENDENCIES
 fi
 
-echo workspace
-ls /workspace
-
 # add them to the local repository
 aur sync \
     --noconfirm --noview \
@@ -31,6 +28,10 @@ then
     mv /workspace/* $GITHUB_WORKSPACE/
     # make sure that the .db/.files symlinks are in place
     cd $GITHUB_WORKSPACE
-    ln -fs aurci2.db.tar.gz aurci2.db
-    ln -fs aurci2.files.tar.gz aurci2.files
+    echo workspace current
+    ls
+    ln -vfs aurci2.db.tar.gz aurci2.db
+    ln -vfs aurci2.files.tar.gz aurci2.files
+    echo workspace later
+    ls
 fi
