@@ -6,10 +6,13 @@ echo "AUR Packages requested to install: $INPUT_PACKAGES"
 echo "AUR Packages to fix missing dependencies: $INPUT_MISSING_AUR_DEPENDENCIES"
 echo "AUR Packages to install (including dependencies): $packages_with_aur_dependencies"
 
+# sync repositories
+pacman -Sy
+
 if [ -n "$INPUT_MISSING_PACMAN_DEPENDENCIES" ]
 then
     echo "Additional Pacman packages to install: $INPUT_MISSING_PACMAN_DEPENDENCIES"
-    pacman -Sy $INPUT_MISSING_PACMAN_DEPENDENCIES
+    pacman -S $INPUT_MISSING_PACMAN_DEPENDENCIES
 fi
 
 echo workspace
