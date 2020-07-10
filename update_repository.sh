@@ -29,4 +29,8 @@ if [ -n "$GITHUB_WORKSPACE" ]
 then
     echo "Moving repository to github workspace"
     mv /workspace/* $GITHUB_WORKSPACE/
+    # make sure that the .db/.files symlinks are in place
+    cd $GITHUB_WORKSPACE
+    ln -fs aurci2.db.tar.gz aurci2.db
+    ln -fs aurci2.files.tar.gz aurci2.files
 fi
