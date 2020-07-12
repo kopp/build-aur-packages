@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# fail if anything goes wrong
+set -e
+# print each line before executing
+set -x
+
 # get list of all packages with dependencies to install
 packages_with_aur_dependencies="$(aur depends --pkgname $INPUT_PACKAGES $INPUT_MISSING_AUR_DEPENDENCIES)"
 echo "AUR Packages requested to install: $INPUT_PACKAGES"
