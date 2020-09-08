@@ -17,7 +17,7 @@ pacman -Sy
 if [ -n "$INPUT_MISSING_PACMAN_DEPENDENCIES" ]
 then
     echo "Additional Pacman packages to install: $INPUT_MISSING_PACMAN_DEPENDENCIES"
-    pacman -S $INPUT_MISSING_PACMAN_DEPENDENCIES
+    pacman --noconfirm -S $INPUT_MISSING_PACMAN_DEPENDENCIES
 fi
 
 # add them to the local repository
