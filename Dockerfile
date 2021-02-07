@@ -1,7 +1,10 @@
 FROM archlinux:latest
 
 # install build dependencies
-RUN pacman -Sy --noconfirm base-devel
+# Note: update (-u) so that the newly installed tools use up-to-date packages.
+#       For example, gcc (in base-devel) fails if it uses an old glibc (from
+#       base image).
+RUN pacman -Syu --noconfirm base-devel
 
 # patch makepkg to allow running as root; see
 # https://www.reddit.com/r/archlinux/comments/6qu4jt/how_to_run_makepkg_in_docker_container_yes_as_root/
