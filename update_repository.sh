@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# fail if anything goes wrong
+set -e
+# print each line before executing
+set -x
+
 # get list of all packages with dependencies to install
 packages_with_aur_dependencies="$(aur depends --pkgname $INPUT_PACKAGES $INPUT_MISSING_AUR_DEPENDENCIES)"
 echo "AUR Packages requested to install: $INPUT_PACKAGES"
@@ -12,7 +17,7 @@ pacman -Sy
 if [ -n "$INPUT_MISSING_PACMAN_DEPENDENCIES" ]
 then
     echo "Additional Pacman packages to install: $INPUT_MISSING_PACMAN_DEPENDENCIES"
-    pacman -S $INPUT_MISSING_PACMAN_DEPENDENCIES
+    pacman --noconfirm -S $INPUT_MISSING_PACMAN_DEPENDENCIES
 fi
 
 # add them to the local repository
