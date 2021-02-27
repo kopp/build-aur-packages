@@ -6,6 +6,13 @@ FROM archlinux:latest
 #       base image).
 RUN pacman -Syu --noconfirm base-devel
 
+# TEMPORARY FIX
+# The glibc installed by arch linux is too new for Github Actions, see
+# https://stackoverflow.com/a/66184907/2165903
+ENV PATCHED_GLIBC=glibc-linux4-2.33-4-x86_64.pkg.tar.zst
+RUN curl -LO https://repo.archlinuxcn.org/x86_64/$PATCHED_GLIBC && \
+    bsdtar -C / -xvf $PATCHED_GLIBC
+
 # patch makepkg to allow running as root; see
 # https://www.reddit.com/r/archlinux/comments/6qu4jt/how_to_run_makepkg_in_docker_container_yes_as_root/
 RUN sed -i 's,exit $E_ROOT,echo but you know what you do,' /usr/bin/makepkg
