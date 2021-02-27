@@ -1,5 +1,13 @@
 FROM archlinux:latest
 
+# TEMPORARY FIX
+# The glibc installed by arch linux is too new for Github Actions, see
+# https://stackoverflow.com/a/66184907/2165903
+# https://stackoverflow.com/a/66163228/2165903
+RUN patched_glibc=glibc-linux4-2.33-4-x86_64.pkg.tar.zst && \
+    curl -LO "https://repo.archlinuxcn.org/x86_64/$patched_glibc" && \
+    bsdtar -C / -xvf "$patched_glibc"
+
 # install build dependencies
 # Note: update (-u) so that the newly installed tools use up-to-date packages.
 #       For example, gcc (in base-devel) fails if it uses an old glibc (from
