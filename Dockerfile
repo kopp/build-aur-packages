@@ -18,10 +18,6 @@ RUN pacman -Syu --noconfirm base-devel
 # https://www.reddit.com/r/archlinux/comments/6qu4jt/how_to_run_makepkg_in_docker_container_yes_as_root/
 RUN sed -i 's,exit $E_ROOT,echo but you know what you do,' /usr/bin/makepkg
 
-# fix makepkg issues in github actions
-# https://stackoverflow.com/q/66088277
-RUN sed -i 's/\tif \[\[ -r $MAKEPKG_CONF \]\]; then/\tif \[\[ -f $MAKEPKG_CONF \]\]; then/' /usr/share/makepkg/util/config.sh
-
 # make sure that the aur tools work under root as well
 ENV AUR_ASROOT=1
 
