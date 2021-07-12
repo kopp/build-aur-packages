@@ -23,7 +23,7 @@ ENV AUR_ASROOT=1
 
 # install aurutils and register it as local package repository
 RUN \
-    gpg --recv-keys --keyserver "hkp://ipv4.pool.sks-keyservers.net" 6BC26A17B9B7018A && \
+    gpg --recv-keys --keyserver pgp.mit.edu 6BC26A17B9B7018A && \
     cd /tmp/ && \
     curl --output aurutils.tar.gz https://aur.archlinux.org/cgit/aur.git/snapshot/aurutils.tar.gz && \
     tar xf aurutils.tar.gz && \
