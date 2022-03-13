@@ -4,7 +4,7 @@ FROM archlinux:latest
 # The glibc installed by arch linux is too new for Github Actions, see
 # https://stackoverflow.com/a/66184907/2165903
 # https://stackoverflow.com/a/66163228/2165903
-RUN patched_glibc=glibc-linux4-2.33-4-x86_64.pkg.tar.zst && \
+RUN patched_glibc=glibc-linux4-2.33-5-x86_64.pkg.tar.zst && \
     curl -LO "https://repo.archlinuxcn.org/x86_64/$patched_glibc" && \
     bsdtar -C / -xvf "$patched_glibc"
 
