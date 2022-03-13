@@ -1,0 +1,26 @@
+name: Test building simple packages from AUR.
+
+on:
+  push:
+  schedule:
+    - cron: "17 2 * * 0"
+
+jobs:
+  build_repository:
+    runs-on: ubuntu-latest
+    steps:
+
+    # Checkout repository content to run the action directly from the
+    # repository.  This makes sure, that this runs the latest/current version
+    # of the action, rather than a tagged/released one.
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Build Packages
+      uses: ./  # Use action from the root of this repository
+      with:
+        packages: >
+          go-do
+
+    - name: List generated Files
+      run: ls -1 > ${{ github.workspace }}/files.txt
