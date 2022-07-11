@@ -41,3 +41,11 @@ If a dependency from AUR is missing, you can pass this to
 `missing_aur_dependencies`.
 
 The resulting repository information will be copied to the github workspace.
+
+
+# Maintenance
+
+It will be necessary to update the gpg key stored in this repository.
+To do so, run
+
+    gpg --export --armor 6BC26A17B9B7018A > gpg_key_6BC26A17B9B7018A.gpg.asc

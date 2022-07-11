@@ -13,9 +13,15 @@ RUN sed -i 's,exit $E_ROOT,echo but you know what you do,' /usr/bin/makepkg
 # make sure that the aur tools work under root as well
 ENV AUR_ASROOT=1
 
+# Add the gpg key for 6BC26A17B9B7018A.
+# This should not be necessary.  It should be possible to use
+#     gpg --recv-keys --keyserver pgp.mit.edu 6BC26A17B9B7018A
+# but this fails randomly in github actions, so import the key from file.
+COPY gpg_key_6BC26A17B9B7018A.gpg.asc /tmp/
+
 # install aurutils and register it as local package repository
 RUN \
-    gpg --recv-keys --keyserver pgp.mit.edu 6BC26A17B9B7018A && \
+    gpg --import /tmp/gpg_key_6BC26A17B9B7018A.gpg.asc && \
     cd /tmp/ && \
     curl --output aurutils.tar.gz https://aur.archlinux.org/cgit/aur.git/snapshot/aurutils.tar.gz && \
     tar xf aurutils.tar.gz && \
