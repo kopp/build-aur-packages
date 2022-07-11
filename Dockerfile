@@ -16,7 +16,6 @@ RUN sed -i 's,exit $E_ROOT,echo but you know what you do,' /usr/bin/makepkg
 # but this fails randomly in github actions, so import the key from file.
 COPY gpg_key_6BC26A17B9B7018A.gpg.asc /tmp/
 
-COPY move_local_worksace_to_github_workspace.sh /
 COPY update_repository.sh /
 
 # Create a local user for building since aur tools should be run as normal user.
@@ -24,13 +23,12 @@ RUN \
     pacman -S --noconfirm sudo && \
     groupadd builder && \
     useradd -m -g builder builder && \
-    echo 'builder ALL = NOPASSWD: /usr/bin/pacman' > /etc/sudoers.d/builder_pacman && \
-    echo 'builder ALL = NOPASSWD:SETENV: /move_local_worksace_to_github_workspace.sh' >> /etc/sudoers.d/builder_pacman
+    echo 'builder ALL = NOPASSWD: /usr/bin/pacman' > /etc/sudoers.d/builder_pacman
 
 
 USER builder
 
-# Build aurutils.
+# Build aurutils as unprivileged user.
 RUN \
     gpg --import /tmp/gpg_key_6BC26A17B9B7018A.gpg.asc && \
     cd /tmp/ && \
@@ -44,15 +42,15 @@ RUN \
     repo-add /home/builder/workspace/aurci2.db.tar.gz /home/builder/workspace/aurutils-*.pkg.tar.zst
 
 USER root
+# Note: Github actions require the dockerfile to be run as root, so do not
+#       switch back to the unprivileged user.
+#       Use `sudo -u <user> <command>` to run a command as this user.
 
 # Register the local repository with pacman.
-# Note: This needs to be done as root.
 RUN \
     echo "# local repository (required by aur tools to be set up)" >> /etc/pacman.conf && \
     echo "[aurci2]" >> /etc/pacman.conf && \
     echo "SigLevel = Optional TrustAll" >> /etc/pacman.conf && \
     echo "Server = file:///home/builder/workspace" >> /etc/pacman.conf
-
-USER builder
 
 CMD ["/update_repository.sh"]
