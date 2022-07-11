@@ -65,3 +65,19 @@ To achieve that, use (e.g. for `v1`):
     git tag -fa v1
     git push origin master --tags
 
+
+
+# Development
+
+To build a package and create the corresponding repository files, build the docker image
+
+    docker build -t builder .
+
+then run it, passing the packages as environment variables.
+The names of the variables are derived from the `action.yaml`.
+
+    mkdir workspace
+    docker run --rm -it \
+        -v $(pwd)/workspace:/workspace \
+        -e "GITHUB_WORKSPACE=/workspace" -e "INPUT_PACKAGES=go-do" \
+        builder
