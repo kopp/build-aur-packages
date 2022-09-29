@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# fail if anything goes wrong
+# Fail if anything goes wrong.
 set -e
-# print each line before executing
+# Print each line before executing.
 set -x
 
 # Get list of all packages with dependencies to install.
@@ -11,7 +11,7 @@ echo "AUR Packages requested to install: $INPUT_PACKAGES"
 echo "AUR Packages to fix missing dependencies: $INPUT_MISSING_AUR_DEPENDENCIES"
 echo "AUR Packages to install (including dependencies): $packages_with_aur_dependencies"
 
-# sync repositories
+# Sync repositories.
 pacman -Sy
 
 if [ -n "$INPUT_MISSING_PACMAN_DEPENDENCIES" ]
