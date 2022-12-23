@@ -24,6 +24,13 @@ inputs:
         are available from AUR.
     required: false
     default: ""
+  keep:
+    description: >
+      A Boolean to tell if existing flags from github workspace directory
+      should be preserved and not rebuild. Defaults to false, that is the
+      way it used to work before this flag has been made available
+    required: false
+    default: false
 runs:
   using: 'docker'
   image: 'Dockerfile'

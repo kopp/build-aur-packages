@@ -10,6 +10,7 @@ packages_with_aur_dependencies="$(aur depends --pkgname $INPUT_PACKAGES $INPUT_M
 echo "AUR Packages requested to install: $INPUT_PACKAGES"
 echo "AUR Packages to fix missing dependencies: $INPUT_MISSING_AUR_DEPENDENCIES"
 echo "AUR Packages to install (including dependencies): $packages_with_aur_dependencies"
+echo "Keep existing packages: $INPUT_KEEP"
 
 # Sync repositories.
 pacman -Sy
@@ -18,6 +19,19 @@ if [ -n "$INPUT_MISSING_PACMAN_DEPENDENCIES" ]
 then
     echo "Additional Pacman packages to install: $INPUT_MISSING_PACMAN_DEPENDENCIES"
     pacman --noconfirm -S $INPUT_MISSING_PACMAN_DEPENDENCIES
+fi
+
+if [ "$INPUT_KEEP" == "true" ]
+then
+    # Copy workspace to local repo to avoid rebuilding and keep
+    # existing packages, even older versions
+    echo "Preserving existing files:"
+    ls -l $GITHUB_WORKSPACE
+    if [ ! -z "$(ls $GITHUB_WORKSPACE)" ]
+    then
+        cp -a $GITHUB_WORKSPACE/* /home/builder/workspace/
+        chown -R builder:builder /home/builder/workspace/*
+    fi
 fi
 
 # Add the packages to the local repository.
