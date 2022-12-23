@@ -41,18 +41,27 @@ sudo --user builder \
     --database aurci2 --root /home/builder/workspace \
     $packages_with_aur_dependencies
 
-# Move the local repository to the workspace.
-if [ -n "$GITHUB_WORKSPACE" ]
+if [ "$INPUT_KEEP" == "true" ] && 
+    cmp --quiet /home/builder/workspace/aurci2.db $GITHUB_WORKSPACE/aurci2.db
 then
-    rm -f /home/builder/workspace/*.old
-    echo "Moving repository to github workspace"
-    mv /home/builder/workspace/* $GITHUB_WORKSPACE/
-    # make sure that the .db/.files files are in place
-    # Note: Symlinks fail to upload, so copy those files
-    cd $GITHUB_WORKSPACE
-    rm aurci2.db aurci2.files
-    cp aurci2.db.tar.gz aurci2.db
-    cp aurci2.files.tar.gz aurci2.files
+    echo "updated=false" >>$GITHUB_OUTPUT
 else
-    echo "No github workspace known (GITHUB_WORKSPACE is unset)."
+    echo "updated=true" >>$GITHUB_OUTPUT
+
+    # Move the local repository to the workspace.
+    if [ -n "$GITHUB_WORKSPACE" ]
+    then
+        rm -f /home/builder/workspace/*.old
+        echo "Moving repository to github workspace"
+        mv /home/builder/workspace/* $GITHUB_WORKSPACE/
+        # make sure that the .db/.files files are in place
+        # Note: Symlinks fail to upload, so copy those files
+        cd $GITHUB_WORKSPACE
+        rm aurci2.db aurci2.files
+        cp aurci2.db.tar.gz aurci2.db
+        cp aurci2.files.tar.gz aurci2.files
+    else
+        echo "No github workspace known (GITHUB_WORKSPACE is unset)."
+    fi
+
 fi
