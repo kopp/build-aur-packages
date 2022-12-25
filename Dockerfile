@@ -1,10 +1,4 @@
-FROM archlinux:latest
-
-# Install build dependencies.
-# Note: update (-u) so that the newly installed tools use up-to-date packages.
-#       For example, gcc (in base-devel) fails if it uses an old glibc (from
-#       base image).
-RUN pacman -Syu --noconfirm base-devel
+FROM archlinux:base-devel
 
 # Add the gpg key for 6BC26A17B9B7018A.
 # This should not be necessary.  It should be possible to use
@@ -15,8 +9,11 @@ COPY gpg_key_6BC26A17B9B7018A.gpg.asc /tmp/
 COPY update_repository.sh /
 
 # Create a local user for building since aur tools should be run as normal user.
+# Also update all packages (-u), so that the newly installed tools use up-to-date packages.
+#       For example, gcc (in base-devel) fails if it uses an old glibc (from
+#       base image).
 RUN \
-    pacman -S --noconfirm sudo && \
+    pacman -Syu --noconfirm --needed sudo && \
     groupadd builder && \
     useradd -m -g builder builder && \
     echo 'builder ALL = NOPASSWD: /usr/bin/pacman' > /etc/sudoers.d/builder_pacman
