@@ -2,8 +2,11 @@
 
 # Fail if anything goes wrong.
 set -e
-# Print each line before executing.
-set -x
+# Print each line before executing if Github arction debug logging is enabled
+if [ "$RUNNER_DEBUG" == "1" ] 
+then
+    set -x
+fi
 
 # Get list of all packages with dependencies to install.
 packages_with_aur_dependencies="$(aur depends --pkgname $INPUT_PACKAGES $INPUT_MISSING_AUR_DEPENDENCIES)"
