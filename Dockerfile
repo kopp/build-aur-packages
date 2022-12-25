@@ -34,8 +34,7 @@ RUN \
     makepkg --syncdeps --noconfirm && \
     sudo pacman -U --noconfirm aurutils-*.pkg.tar.zst && \
     mkdir /home/builder/workspace && \
-    cp /tmp/aurutils/aurutils-*.pkg.tar.zst /home/builder/workspace/ && \
-    repo-add /home/builder/workspace/aurci2.db.tar.gz /home/builder/workspace/aurutils-*.pkg.tar.zst
+    repo-add /home/builder/workspace/aurci2.db.tar.gz
 
 USER root
 # Note: Github actions require the dockerfile to be run as root, so do not
