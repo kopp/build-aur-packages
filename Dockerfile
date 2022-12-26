@@ -7,6 +7,7 @@ COPY update_repository.sh /
 #       For example, gcc (in base-devel) fails if it uses an old glibc (from
 #       base image).
 RUN \
+    pacman-key --init && \
     pacman -Syu --noconfirm --needed sudo && \
     groupadd builder && \
     useradd -m -g builder builder && \
