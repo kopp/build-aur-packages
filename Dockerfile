@@ -1,11 +1,5 @@
 FROM archlinux:base-devel
 
-# Add the gpg key for 6BC26A17B9B7018A.
-# This should not be necessary.  It should be possible to use
-#     gpg --recv-keys --keyserver pgp.mit.edu 6BC26A17B9B7018A
-# but this fails randomly in github actions, so import the key from file.
-COPY gpg_key_6BC26A17B9B7018A.gpg.asc /tmp/
-
 COPY update_repository.sh /
 
 # Create a local user for building since aur tools should be run as normal user.
@@ -23,7 +17,6 @@ USER builder
 
 # Build aurutils as unprivileged user.
 RUN \
-    gpg --import /tmp/gpg_key_6BC26A17B9B7018A.gpg.asc && \
     cd /tmp/ && \
     curl --output aurutils.tar.gz https://aur.archlinux.org/cgit/aur.git/snapshot/aurutils.tar.gz && \
     tar xf aurutils.tar.gz && \
