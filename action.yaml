@@ -24,6 +24,12 @@ inputs:
         are available from AUR.
     required: false
     default: ""
+  reponame:
+    description: >
+      A string containing the name of the pacman repository to be used.
+      Defaults to aurci2 for compatibility reasons.
+    required: false
+    default: 'aurci2'
   keep:
     description: >
       A Boolean to tell if existing flags from github workspace directory
