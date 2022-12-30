@@ -8,6 +8,11 @@ then
     set -x
 fi
 
+# remove newlines from any input parameters
+INPUT_PACKAGES="${INPUT_PACKAGES//$'\n'/ }"
+INPUT_MISSING_AUR_DEPENDENCIES="${INPUT_MISSING_AUR_DEPENDENCIES//$'\n'/ }"
+INPUT_MISSING_PACMAN_DEPENDENCIES="${INPUT_MISSING_PACMAN_DEPENDENCIES//$'\n'/ }"
+
 # Get list of all packages with dependencies to install.
 packages_with_aur_dependencies="$(aur depends --pkgname $INPUT_PACKAGES $INPUT_MISSING_AUR_DEPENDENCIES)"
 echo "AUR Packages requested to install: $INPUT_PACKAGES"
