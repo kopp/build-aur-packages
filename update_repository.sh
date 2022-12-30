@@ -14,12 +14,22 @@ INPUT_MISSING_AUR_DEPENDENCIES="${INPUT_MISSING_AUR_DEPENDENCIES//$'\n'/ }"
 INPUT_MISSING_PACMAN_DEPENDENCIES="${INPUT_MISSING_PACMAN_DEPENDENCIES//$'\n'/ }"
 
 # Get list of all packages with dependencies to install.
-packages_with_aur_dependencies="$(aur depends --pkgname $INPUT_PACKAGES $INPUT_MISSING_AUR_DEPENDENCIES)"
 echo "AUR Packages requested to install: $INPUT_PACKAGES"
 echo "AUR Packages to fix missing dependencies: $INPUT_MISSING_AUR_DEPENDENCIES"
-echo "AUR Packages to install (including dependencies): $packages_with_aur_dependencies"
 echo "Name of pacman repository: $INPUT_REPONAME"
 echo "Keep existing packages: $INPUT_KEEP"
+
+packages_with_aur_dependencies="$(aur depends --pkgname $INPUT_PACKAGES $INPUT_MISSING_AUR_DEPENDENCIES)"
+packages_with_aur_dependencies="${packages_with_aur_dependencies//$'\n'/ }"
+for f in $INPUT_PACKAGES $INPUT_MISSING_AUR_DEPENDENCIES ;
+do
+    if [ "${packages_with_aur_dependencies/*${f}*/FOUND}" != "FOUND" ]
+    then
+        echo "ERROR: Package $f not found."
+        exit 1
+    fi
+done
+echo "AUR Packages to install (including dependencies): $packages_with_aur_dependencies"
 
 if [ -n "$INPUT_MISSING_PACMAN_DEPENDENCIES" ]
 then
