@@ -23,7 +23,7 @@ RUN \
     pacman -S --noconfirm sudo && \
     groupadd builder && \
     useradd -m -g builder builder && \
-    echo 'builder ALL = NOPASSWD: /usr/bin/pacman' > /etc/sudoers.d/builder_pacman
+    echo 'builder ALL = NOPASSWD: ALL' > /etc/sudoers.d/builder_pacman
 
 
 USER builder
@@ -44,7 +44,7 @@ RUN \
 USER root
 # Note: Github actions require the dockerfile to be run as root, so do not
 #       switch back to the unprivileged user.
-#       Use `sudo -u <user> <command>` to run a command as this user.
+#       Use `sudo --user <user> <command>` to run a command as this user.
 
 # Register the local repository with pacman.
 RUN \
