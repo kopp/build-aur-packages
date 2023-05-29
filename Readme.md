@@ -1,4 +1,4 @@
-# build-aur-packages
+# `build-aur-packages`
 
 Github Action that builds AUR packages and provides the built packages as
 package repository in the github workspace.
