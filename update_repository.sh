@@ -31,6 +31,7 @@ do
 done
 echo "AUR Packages to install (including dependencies): $packages_with_aur_dependencies"
 
+# Check for optional missing pacman dependencies to install.
 if [ -n "$INPUT_MISSING_PACMAN_DEPENDENCIES" ]
 then
     echo "Additional Pacman packages to install: $INPUT_MISSING_PACMAN_DEPENDENCIES"

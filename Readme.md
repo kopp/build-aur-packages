@@ -1,8 +1,8 @@
-# build-aur-packages
+# `build-aur-packages`
 
 Github Action that builds AUR packages and provides the built packages as
-repository in the workspace.
-From there, you can use them to install, upload, ...
+package repository in the github workspace.
+From there, other actions can use the package repository to install packages or upload the repository to some share or ...
 
 See
 [here for a real world example](https://github.com/kopp/aurci2).
