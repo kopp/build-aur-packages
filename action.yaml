@@ -24,6 +24,24 @@ inputs:
         are available from AUR.
     required: false
     default: ""
+  reponame:
+    description: >
+      A string containing the name of the pacman repository to be used.
+      Defaults to aurci2 for compatibility reasons.
+    required: false
+    default: 'aurci2'
+  keep:
+    description: >
+      A Boolean to tell if existing flags from github workspace directory
+      should be preserved and not rebuild. Defaults to false, that is the
+      way it used to work before this flag has been made available
+    required: false
+    default: false
+outputs:
+  updated:
+    description: >
+      A String ("true" or "false") to tell if anything has been updated and thus may need to be
+      uploaded. Always true if keep=false
 runs:
   using: 'docker'
   image: 'Dockerfile'
