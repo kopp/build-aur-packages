@@ -25,15 +25,15 @@ fi
 sudo --user builder \
     aur sync \
     --noconfirm --noview \
-    --database aurci2 --root /home/builder/workspace \
+    --database aurci2 --root /local_repository \
     $packages_with_aur_dependencies
 
 # Move the local repository to the workspace.
 if [ -n "$GITHUB_WORKSPACE" ]
 then
-    rm -f /home/builder/workspace/*.old
+    rm -f /local_repository/*.old
     echo "Moving repository to github workspace"
-    mv /home/builder/workspace/* $GITHUB_WORKSPACE/
+    mv /local_repository/* $GITHUB_WORKSPACE/
     # make sure that the .db/.files files are in place
     # Note: Symlinks fail to upload, so copy those files
     cd $GITHUB_WORKSPACE

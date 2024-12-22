@@ -23,13 +23,22 @@ COPY gpg_key_6BC26A17B9B7018A.gpg.asc /tmp/
 
 COPY update_repository.sh /
 
+
 # Create a local user for building since aur tools should be run as normal user.
+# This user is in the `alpm` group, to ensure, that the files it generates are accessible
+# - to the user building the packages (the builder user)
+# - to the user that pacman uses to download artifacts
+# See also https://archlinux.org/news/manual-intervention-for-pacman-700-and-local-repositories-required/
 RUN \
     pacman -S --noconfirm sudo && \
-    groupadd builder && \
-    useradd -m -g builder builder && \
+    useradd -m -g alpm builder && \
     echo 'builder ALL = NOPASSWD: ALL' > /etc/sudoers.d/builder_pacman
 
+# Create a folder for the local repository.
+# This also needs to be accessible to `builder` and `alpm`.
+RUN \
+    mkdir /local_repository && \
+    chown builder:alpm /local_repository
 
 USER builder
 
@@ -42,9 +51,9 @@ RUN \
     cd aurutils && \
     makepkg --syncdeps --noconfirm && \
     sudo pacman -U --noconfirm aurutils-*.pkg.tar.zst && \
-    mkdir /home/builder/workspace && \
-    cp /tmp/aurutils/aurutils-*.pkg.tar.zst /home/builder/workspace/ && \
-    repo-add /home/builder/workspace/aurci2.db.tar.gz /home/builder/workspace/aurutils-*.pkg.tar.zst
+    cp /tmp/aurutils/aurutils-*.pkg.tar.zst /local_repository/ && \
+    repo-add /local_repository/aurci2.db.tar.gz /local_repository/aurutils-*.pkg.tar.zst
+
 
 USER root
 # Note: Github actions require the dockerfile to be run as root, so do not
@@ -56,6 +65,6 @@ RUN \
     echo "# local repository (required by aur tools to be set up)" >> /etc/pacman.conf && \
     echo "[aurci2]" >> /etc/pacman.conf && \
     echo "SigLevel = Optional TrustAll" >> /etc/pacman.conf && \
-    echo "Server = file:///home/builder/workspace" >> /etc/pacman.conf
+    echo "Server = file:///local_repository" >> /etc/pacman.conf
 
 CMD ["/update_repository.sh"]
