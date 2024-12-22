@@ -2,7 +2,8 @@
 
 Github Action that builds AUR packages and provides the built packages as
 package repository in the github workspace.
-From there, other actions can use the package repository to install packages or upload the repository to some share or ...
+From there, other actions can use the package repository to install packages or
+upload the repository to some share or ...
 
 See
 [here for a real world example](https://github.com/kopp/aurci2).
@@ -26,7 +27,7 @@ jobs:
           libusb-compat
 ```
 
-This example wil build packages
+This example will build packages
 
 ```
           azure-cli
@@ -81,3 +82,28 @@ The names of the variables are derived from the `action.yaml`.
         -v $(pwd)/workspace:/workspace \
         -e "GITHUB_WORKSPACE=/workspace" -e "INPUT_PACKAGES=go-do" \
         builder
+
+
+## How this works
+
+This repository contains/provides a github action.
+This is defined in [`action.yaml`](./action.yaml), in particular this defines the inputs
+and that this action uses `docker` by building and running [`Dockerfile`](./Dockerfile).
+
+The Docker image we build is an Arch Linux image, with some tweaks to `pacman`
+and related tools so that they run on github workers.
+It will build `aurutils` and use it to create a new package database `aurci2`.
+This local database is directly added as local repository to `pacman` (via `pacman.conf`).
+
+After this is done, the docker image is ready.
+When the docker container is executed, it runs [`update_repository.sh`](./update_repository.sh).
+This will pick up all inputs from the github action (which are passed as environmen variables)
+`INPUT_<name>`.
+It will then install dependencies via `pacman` and use `aur sync` to fetch and build aur
+packages.
+They are added to the `aurci2` local database.
+
+Finally, all files (in particular including the database files) are copied to the
+`$GITHUB_WORKSPACE`, where other actions can pick them up, e.g. as in
+[this example](https://github.com/kopp/aurci2/blob/master/.github/workflows/build_repository.yaml)
+where they are published as github release.
