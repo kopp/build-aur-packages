@@ -11,19 +11,6 @@ echo "AUR Packages requested to install: $INPUT_PACKAGES"
 echo "AUR Packages to fix missing dependencies: $INPUT_MISSING_AUR_DEPENDENCIES"
 echo "AUR Packages to install (including dependencies): $packages_with_aur_dependencies"
 
-pwd
-ls -hal /home/builder/workspace
-ls -hald /home/builder/workspace
-whoami
-
-ls -hal /home/builder/workspace/aurci2.db
-file /home/builder/workspace/aurci2.db
-tar tf /home/builder/workspace/aurci2.db
-
-ls -hal /home/builder/workspace/aurci2.db.tar.gz
-file /home/builder/workspace/aurci2.db.tar.gz
-tar tf /home/builder/workspace/aurci2.db.tar.gz
-
 # Sync repositories.
 pacman -Sy
 
