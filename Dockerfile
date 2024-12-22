@@ -1,5 +1,10 @@
 FROM archlinux:latest
 
+# Disable the sandbox for downloading
+# This was added in pacman 7 but requires the kernel feature 'landlock' to be
+# available, which is not available on current runners on github.
+RUN sed -i 's,#DisableSandbox,DisableSandbox,' /etc/pacman.conf
+
 # Install build dependencies.
 # Note: update (-u) so that the newly installed tools use up-to-date packages.
 #       For example, gcc (in base-devel) fails if it uses an old glibc (from
