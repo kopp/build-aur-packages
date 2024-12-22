@@ -11,6 +11,11 @@ echo "AUR Packages requested to install: $INPUT_PACKAGES"
 echo "AUR Packages to fix missing dependencies: $INPUT_MISSING_AUR_DEPENDENCIES"
 echo "AUR Packages to install (including dependencies): $packages_with_aur_dependencies"
 
+pwd
+ls -hal /home/builder/workspace
+ls -hald /home/builder/workspace
+whoami
+
 # Sync repositories.
 pacman -Sy
 
