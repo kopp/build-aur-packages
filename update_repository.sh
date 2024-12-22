@@ -16,6 +16,14 @@ ls -hal /home/builder/workspace
 ls -hald /home/builder/workspace
 whoami
 
+ls -hal /home/builder/workspace/aurci2.db
+file /home/builder/workspace/aurci2.db
+tar tf /home/builder/workspace/aurci2.db
+
+ls -hal /home/builder/workspace/aurci2.db.tar.gz
+file /home/builder/workspace/aurci2.db.tar.gz
+tar tf /home/builder/workspace/aurci2.db.tar.gz
+
 # Sync repositories.
 pacman -Sy
 
