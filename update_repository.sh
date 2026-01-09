@@ -25,6 +25,7 @@ fi
 sudo --user builder \
     aur sync \
     --noconfirm --noview \
+    --clean \
     --database aurci2 --root /local_repository \
     $packages_with_aur_dependencies
 
