@@ -21,14 +21,21 @@ then
     pacman --noconfirm -S $INPUT_MISSING_PACMAN_DEPENDENCIES
 fi
 
-# Add the packages to the local repository.
-sudo --user builder \
-    aur sync \
-    --noconfirm --noview \
-    --clean \
-    --database aurci2 --root /local_repository \
-    $packages_with_aur_dependencies
-    
+# Add the packages to the local repository one by one.
+# We iterate through the list to ensure that if one package fails, 
+# we can continue with the others.
+for pkg in $packages_with_aur_dependencies; do
+    echo "Building package: $pkg"
+    if ! sudo --user builder \
+        aur sync \
+        --noconfirm --noview \
+        --clean \
+        --database aurci2 --root /local_repository \
+        "$pkg"; then
+        echo "Error: Failed to build package $pkg. Skipping..."
+    fi
+done
+
 cd /local_repository
 shopt -s nullglob
 for file in *:*pkg.tar*; do
