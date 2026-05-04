@@ -1,6 +1,7 @@
 name: "Build AUR package repository"
 description: >
-    Build a given list of AUR packages and store them in a repository.
+    Build a given list of AUR packages and/or custom PKGBUILD directories and
+    store them in a repository.
 branding:
   icon: package
   color: blue
@@ -9,7 +10,15 @@ inputs:
     description: >
         A string with a space separated list of aur packages that should
         be built and included in the repository.
-    required: true
+    required: false
+    default: ""
+  custom_pkgbuild_directories:
+    description: >
+        A string with a space separated list of directories containing custom
+        PKGBUILD files that should be built and included in the repository.
+        Relative paths are resolved from the GitHub workspace.
+    required: false
+    default: ""
   missing_pacman_dependencies:
     description: >
         A string with a space separated list of dependencies that are not
