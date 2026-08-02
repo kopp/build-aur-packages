@@ -1,7 +1,7 @@
 # build-aur-packages
 
-Github Action that builds AUR packages and provides the built packages as
-package repository in the github workspace.
+Github Action that builds AUR packages and/or custom PKGBUILD directories and
+provides the built packages as package repository in the github workspace.
 From there, other actions can use the package repository to install packages or
 upload the repository to some share or ...
 
@@ -42,6 +42,68 @@ If a dependency from AUR is missing, you can pass this to
 `missing_aur_dependencies`.
 
 The resulting repository information will be copied to the github workspace.
+
+The action attempts every independent package even when an earlier package
+fails. Successful packages are still copied to the workspace, but the action
+exits with a failure after repository generation so GitHub reports the partial
+build. Consumers that publish partial repositories should run their publishing
+steps after failure only when the `repository_ready` output is `true`.
+
+## Outputs
+
+- `failed_builds`: a JSON array containing failed AUR package builds,
+  dependency resolutions, and custom PKGBUILD directories. Entries are
+  prefixed with `aur:`, `aur-resolution:`, or `custom:`.
+- `repository_ready`: `true` when at least one requested build succeeded and
+  the repository was exported to the GitHub workspace; otherwise `false`.
+
+Example for publishing successful artifacts while retaining a failed workflow
+result:
+
+```yaml
+- name: Build Packages
+  id: build
+  uses: kopp/build-aur-packages@v1
+  with:
+    packages: package-one package-two
+- name: Publish partial or complete repository
+  if: ${{ !cancelled() && steps.build.outputs.repository_ready == 'true' }}
+  run: ./publish-repository.sh
+```
+
+## Custom PKGBUILDs
+
+In addition to, packages from AUR, you can build custom
+PKGBUILDs that are already present in the github workspace. Pass a
+space-separated list of directories with the `custom_pkgbuild_directories`
+input. Each directory must contain a `PKGBUILD`.
+The `packages` input can be omitted when `custom_pkgbuild_directories` is set.
+
+```yaml
+jobs:
+  build_repository:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build Packages
+      uses: kopp/build-aur-packages@v1
+      with:
+        custom_pkgbuild_directories: >
+          pkgbuilds/my-library
+          pkgbuilds/my-tool
+```
+
+Relative paths are resolved from `$GITHUB_WORKSPACE`. The paths are split on
+spaces, so avoid spaces in custom PKGBUILD directory names.
+
+When custom PKGBUILD directories are set, `missing_aur_dependencies` are built
+first, then custom PKGBUILD directories are built in the order listed, and then
+packages from `packages` are built. This lets custom packages satisfy
+dependencies of later AUR packages. If a custom PKGBUILD itself needs an AUR
+package, list that package in `missing_aur_dependencies`. If custom PKGBUILDs
+depend on each other, list their directories in dependency order. If a custom
+PKGBUILD produces a package with the same name as an entry in `packages`, that
+entry is skipped from the later AUR build.
 
 
 # Maintenance
@@ -99,9 +161,9 @@ After this is done, the docker image is ready.
 When the docker container is executed, it runs [`update_repository.sh`](./update_repository.sh).
 This will pick up all inputs from the github action (which are passed as environmen variables)
 `INPUT_<name>`.
-It will then install dependencies via `pacman` and use `aur sync` to fetch and build aur
-packages.
-They are added to the `aurci2` local database.
+It will then install dependencies via `pacman`, use `aur sync` to fetch and build aur
+packages, and use `makepkg` to build any custom PKGBUILD directories.
+The resulting packages are added to the `aurci2` local database.
 
 Finally, all files (in particular including the database files) are copied to the
 `$GITHUB_WORKSPACE`, where other actions can pick them up, e.g. as in

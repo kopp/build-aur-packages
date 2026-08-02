@@ -9,7 +9,7 @@ RUN sed -i 's,#DisableSandbox,DisableSandbox,' /etc/pacman.conf
 # Note: update (-u) so that the newly installed tools use up-to-date packages.
 #       For example, gcc (in base-devel) fails if it uses an old glibc (from
 #       base image).
-RUN pacman -Syu --noconfirm base-devel
+RUN pacman -Syu --noconfirm base-devel git
 
 # Patch makepkg to allow running as root; see
 # https://www.reddit.com/r/archlinux/comments/6qu4jt/how_to_run_makepkg_in_docker_container_yes_as_root/
@@ -46,8 +46,7 @@ USER builder
 RUN \
     gpg --import /tmp/gpg_key_6BC26A17B9B7018A.gpg.asc && \
     cd /tmp/ && \
-    curl --output aurutils.tar.gz https://aur.archlinux.org/cgit/aur.git/snapshot/aurutils.tar.gz && \
-    tar xf aurutils.tar.gz && \
+    git clone --depth 1 https://aur.archlinux.org/aurutils.git && \
     cd aurutils && \
     makepkg --syncdeps --noconfirm && \
     sudo pacman -U --noconfirm aurutils-*.pkg.tar.zst && \
