@@ -43,6 +43,34 @@ If a dependency from AUR is missing, you can pass this to
 
 The resulting repository information will be copied to the github workspace.
 
+The action attempts every independent package even when an earlier package
+fails. Successful packages are still copied to the workspace, but the action
+exits with a failure after repository generation so GitHub reports the partial
+build. Consumers that publish partial repositories should run their publishing
+steps after failure only when the `repository_ready` output is `true`.
+
+## Outputs
+
+- `failed_builds`: a JSON array containing failed AUR package builds,
+  dependency resolutions, and custom PKGBUILD directories. Entries are
+  prefixed with `aur:`, `aur-resolution:`, or `custom:`.
+- `repository_ready`: `true` when at least one requested build succeeded and
+  the repository was exported to the GitHub workspace; otherwise `false`.
+
+Example for publishing successful artifacts while retaining a failed workflow
+result:
+
+```yaml
+- name: Build Packages
+  id: build
+  uses: kopp/build-aur-packages@v1
+  with:
+    packages: package-one package-two
+- name: Publish partial or complete repository
+  if: ${{ !cancelled() && steps.build.outputs.repository_ready == 'true' }}
+  run: ./publish-repository.sh
+```
+
 ## Custom PKGBUILDs
 
 In addition to, packages from AUR, you can build custom

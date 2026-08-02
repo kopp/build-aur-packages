@@ -33,6 +33,15 @@ inputs:
         are available from AUR.
     required: false
     default: ""
+outputs:
+  failed_builds:
+    description: >
+        A JSON array containing AUR packages, dependency resolutions, or
+        custom PKGBUILD directories that failed.
+  repository_ready:
+    description: >
+        "true" when at least one requested build succeeded and the generated
+        repository was exported to the GitHub workspace; otherwise "false".
 runs:
   using: 'docker'
   image: 'Dockerfile'
